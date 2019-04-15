@@ -1,0 +1,9 @@
+.todo-list-search__input {
+  flex-grow: 1;
+  padding: 10px;
+}
+
+.todo-list-search {
+  width: 100%;
+  margin-right: 16px;
+}
