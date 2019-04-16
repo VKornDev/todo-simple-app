@@ -1,25 +1,56 @@
-import React from 'react';
+import React, { Component } from 'react';
 import TodoList from '../TodoList/TodoList';
 import AppHeader from '../AppHeader/AppHeader';
 import TodoListSearch from '../TodoListSearch/TodoListSearch';
 import TodoListItemFilter from '../TodoListItemFilter/TodoListItemFilter';
 import './App.css';
 
-export default function App() {
-  const todoData = [
-    { label: 'Drink Coffee', important: false, id: 1 },
-    { label: 'Learn React', important: true, id: 2 },
-    { label: 'Train', important: true, id: 3 },
-  ];
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      todoData: [
+        { label: 'Drink Coffee', important: false, id: 1 },
+        { label: 'Learn React', important: true, id: 2 },
+        { label: 'Train', important: true, id: 3 },
+      ],
+    };
 
-  return (
-    <div className="app">
-      <AppHeader toDo={1} done={10}/>
-      <div className="search-menu">
-        <TodoListSearch/>
-        <TodoListItemFilter/>
+    this.deleteItem = this.deleteItem.bind(this);
+  };
+
+  deleteItem(id) {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+
+      /**
+       * IMPORTANT!
+       * NEVER change the original data
+       * ALWAYS do a copy and work with it
+       **/
+      const newArray = [
+        ...todoData.slice(0, idx),
+        ...todoData.slice(idx + 1),
+      ];
+      return {
+        todoData: newArray,
+      };
+    });
+  }
+
+  render() {
+    return (
+      <div className="app">
+        <AppHeader toDo={1} done={10}/>
+        <div className="search-menu">
+          <TodoListSearch/>
+          <TodoListItemFilter/>
+        </div>
+        <TodoList
+          todos={this.state.todoData}
+          onDeleted={(id) => this.deleteItem(id)}
+        />
       </div>
-      <TodoList todos={todoData}/>
-    </div>
-  );
+    );
+  }
 }
