@@ -1,12 +1,12 @@
 import React from 'react';
 import './TodoListSearch.css';
 
-const TodoListSearch = () => {
+export default function TodoListSearch() {
   return (
     <div className="todo-list-search">
-      <input className="todo-list-search__input form-control" type="text" placeholder="search"/>
+      <input className="form-control"
+             type="text"
+             placeholder="type to search"/>
     </div>
   );
-};
-
-export default TodoListSearch;
+}

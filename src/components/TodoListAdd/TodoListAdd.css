@@ -1,0 +1,9 @@
+.todo-list-add {
+  margin-top: 1rem;
+}
+
+.todo-list-add input {
+  margin-right: 1rem;
+  flex-grow: 1;
+  padding: 10px;
+}

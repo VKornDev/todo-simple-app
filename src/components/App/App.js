@@ -4,8 +4,11 @@ import AppHeader from '../AppHeader/AppHeader';
 import TodoListSearch from '../TodoListSearch/TodoListSearch';
 import TodoListItemFilter from '../TodoListItemFilter/TodoListItemFilter';
 import './App.css';
+import TodoListAdd from '../TodoListAdd/TodoListAdd';
 
 export default class App extends Component {
+  maxId = 100;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -17,6 +20,7 @@ export default class App extends Component {
     };
 
     this.deleteItem = this.deleteItem.bind(this);
+    this.addItem = this.addItem.bind(this);
   };
 
   deleteItem(id) {
@@ -38,6 +42,30 @@ export default class App extends Component {
     });
   }
 
+  addItem(text) {
+    const newItem = {
+      label: text,
+      important: false,
+      id: this.maxId++,
+    };
+
+    this.setState(({ todoData }) => {
+
+      /**
+       * IMPORTANT!
+       * NEVER change the original data
+       * ALWAYS do a copy and work with it
+       **/
+      const newArray = [
+        ...todoData,
+        newItem,
+      ];
+      return {
+        todoData: newArray,
+      };
+    });
+  }
+
   render() {
     return (
       <div className="app">
@@ -49,6 +77,9 @@ export default class App extends Component {
         <TodoList
           todos={this.state.todoData}
           onDeleted={(id) => this.deleteItem(id)}
+        />
+        <TodoListAdd
+          onAddListItem={(text) => this.addItem(text)}
         />
       </div>
     );
