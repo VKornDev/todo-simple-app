@@ -14,15 +14,27 @@ export default class TodoListItem extends Component {
     this.onImportantClick = this.onImportantClick.bind(this);
   }
 
+  /*// When new state NOT DEPENDS ON previous one
   onLabelClick() {
     this.setState({
       done: !this.state.done,
     });
-  }
+  }*/
+
+  // When new state DEPENDS ON previous one
+  onLabelClick() {
+    this.setState(({ done }) => {
+      return {
+        done: !done,
+      };
+    });
+  };
 
   onImportantClick() {
-    this.setState({
-      important: !this.state.important,
+    this.setState(({ important }) => {
+      return {
+        important: !important,
+      };
     });
   }
 
@@ -34,6 +46,7 @@ export default class TodoListItem extends Component {
     if (done) {
       itemClassName += ' done';
     }
+
     if (important) {
       itemClassName += ' important';
     }
