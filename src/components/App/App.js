@@ -16,8 +16,14 @@ export default class App extends Component {
         this.createTodoItem('Drink Coffee'),
         this.createTodoItem('Learn React'),
         this.createTodoItem('Train'),
+        this.createTodoItem('Fix a car'),
+        this.createTodoItem('Walk with my dog'),
+        this.createTodoItem('Clean the room'),
+        this.createTodoItem('Call my mom'),
+        this.createTodoItem('Buy 10 eggs'),
       ],
       searchSubstring: '',
+      filter: 'all',
     };
 
     this.deleteItem = this.deleteItem.bind(this);
@@ -25,6 +31,7 @@ export default class App extends Component {
     this.onToggleImportant = this.onToggleImportant.bind(this);
     this.onToggleDone = this.onToggleDone.bind(this);
     this.searchItem = this.searchItem.bind(this);
+    this.sortItems = this.sortItems.bind(this);
   };
 
   createTodoItem(label) {
@@ -112,9 +119,37 @@ export default class App extends Component {
     });
   }
 
+  sortItems(todoData, searchSubstring, filter) {
+    const foundItems = this.searchItem(todoData, searchSubstring);
+    let filteredItems = '';
+
+    switch (filter) {
+      case 'done': {
+        filteredItems = todoData.filter((el) => el.done === true);
+        break;
+      }
+
+      case 'active': {
+        filteredItems = todoData.filter((el) => el.done === false);
+        break;
+      }
+
+      case 'all': {
+        filteredItems = todoData;
+        break;
+      }
+
+      default: {
+        filteredItems = todoData;
+      }
+    }
+
+    return foundItems.filter((el) => filteredItems.includes(el));
+  }
+
   render() {
-    const { todoData, searchSubstring } = this.state;
-    const visibleItems = this.searchItem(todoData, searchSubstring);
+    const { todoData, searchSubstring, filter } = this.state;
+    const sortedItems = this.sortItems(todoData, searchSubstring, filter);
     let itemsDoneCounter = todoData.filter((el) => el.done).length;
     let itemsTodoCounter = todoData.length - itemsDoneCounter;
     return (
@@ -125,12 +160,16 @@ export default class App extends Component {
 
         <div className="search-menu d-flex">
           <TodoListSearch
-            searchItem={(text) => this.setState({ searchSubstring: text })}/>
-          <TodoListItemFilter/>
+            searchItem={(text) => this.setState({ searchSubstring: text })}
+          />
+          <TodoListItemFilter
+            itemFilter={(text) => this.setState({ filter: text })}
+            filter={filter}
+          />
         </div>
 
         <TodoList
-          items={visibleItems}
+          items={sortedItems}
           onDelete={(id) => this.deleteItem(id)}
           onImportant={(id) => this.onToggleImportant(id)}
           onDone={(id) => this.onToggleDone(id)}
