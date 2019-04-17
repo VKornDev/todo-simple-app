@@ -17,12 +17,14 @@ export default class App extends Component {
         this.createTodoItem('Learn React'),
         this.createTodoItem('Train'),
       ],
+      searchSubstring: '',
     };
 
     this.deleteItem = this.deleteItem.bind(this);
     this.addItem = this.addItem.bind(this);
     this.onToggleImportant = this.onToggleImportant.bind(this);
     this.onToggleDone = this.onToggleDone.bind(this);
+    this.searchItem = this.searchItem.bind(this);
   };
 
   createTodoItem(label) {
@@ -73,6 +75,15 @@ export default class App extends Component {
     });
   }
 
+  searchItem(todoData, searchSubstring) {
+    if (searchSubstring.length === 0) {
+      return todoData;
+    }
+
+    return todoData.filter((el) => el.label.toLowerCase()
+    .indexOf(searchSubstring.toLowerCase()) > -1);
+  }
+
   toggleProperty(array, id, propName) {
     const idx = array.findIndex((el) => el.id === id);
 
@@ -82,7 +93,7 @@ export default class App extends Component {
       ...array.slice(0, idx),
       newItem,
       ...array.slice(idx + 1),
-    ]
+    ];
   }
 
   onToggleDone(id) {
@@ -102,21 +113,24 @@ export default class App extends Component {
   }
 
   render() {
-    const { todoData } = this.state;
+    const { todoData, searchSubstring } = this.state;
+    const visibleItems = this.searchItem(todoData, searchSubstring);
     let itemsDoneCounter = todoData.filter((el) => el.done).length;
     let itemsTodoCounter = todoData.length - itemsDoneCounter;
     return (
       <div className="app">
-        <AppHeader toDo={itemsTodoCounter === 0 ? 'No' : itemsTodoCounter}
-                   done={itemsDoneCounter}/>
+        <AppHeader
+          toDo={itemsTodoCounter === 0 ? 'No' : itemsTodoCounter}
+          done={itemsDoneCounter}/>
 
         <div className="search-menu d-flex">
-          <TodoListSearch/>
+          <TodoListSearch
+            searchItem={(text) => this.setState({ searchSubstring: text })}/>
           <TodoListItemFilter/>
         </div>
 
         <TodoList
-          items={todoData}
+          items={visibleItems}
           onDelete={(id) => this.deleteItem(id)}
           onImportant={(id) => this.onToggleImportant(id)}
           onDone={(id) => this.onToggleDone(id)}
