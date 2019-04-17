@@ -13,8 +13,11 @@ export default class TodoListAdd extends Component {
   }
 
   onFormSubmit(event) {
-    this.props.onAddListItem(this.state.label);
     event.preventDefault();
+    this.props.onAddListItem(this.state.label);
+    this.setState({
+      label: '',
+    });
   }
 
   onInputChange(event) {
@@ -31,6 +34,7 @@ export default class TodoListAdd extends Component {
         <input className="form-control"
                type="text"
                placeholder="type to add"
+               value={this.state.label}
                onChange={this.onInputChange}
         />
         <button className="btn btn-info">Add</button>
